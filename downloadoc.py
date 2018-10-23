@@ -46,8 +46,11 @@ class DownloadDoc:
             if href:
                 self._searched_links.append(href)
                 try:
-                    response = http.request('HEAD', href, timeout=3, retry=2)
+                    response = http.request('HEAD', href, timeout=3, retries=2)
                 except urllib3.exceptions.MaxRetryError:
+                    self._failed_links.append(href)
+                    continue
+                except UnicodeEncodeError:
                     self._failed_links.append(href)
                     continue
 
